@@ -1,0 +1,28 @@
+trigger:
+- main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# Instalación del entorno
+- task: UseDotNet@2
+  displayName: 'Instalar .NET 8.0 SDK'
+  inputs:
+    packageType: 'sdk'
+    version: '8.x'
+
+# Restauración de dependencias
+- task: DotNetCoreCLI@2
+  displayName: 'Restaurar paquetes NuGet'
+  inputs:
+    command: 'restore'
+    projects: '**/*.csproj'
+
+# Ejecución de Pruebas Automatizadas con recolección de cobertura
+- task: DotNetCoreCLI@2
+  displayName: 'Ejecutar Tests Unitarios (xUnit)'
+  inputs:
+    command: 'test'
+    projects: '**/*Tests.csproj'
+    arguments: '--collect "XPlat Code Coverage"'
